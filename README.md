@@ -18,4 +18,7 @@ Based on the description, Chat-GPT generates an image from the text using Stable
 
 ![Image Generation from Text](https://github.com/sinjorjob/django-chat-gpt/blob/main/source/Image%20Generation%20from%20Text.png)
 
+![Image Generation from Text](https://github.com/sinjorjob/django-chat-gpt/blob/main/source/Image%20Generation%20from%20Text2.png)
+
+
 
