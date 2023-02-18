@@ -1,0 +1,115 @@
+{% extends './base.html' %}
+{% load static %}
+{% block content %}
+
+<section>
+
+  <p>生成したい画像のイメージ、簡単な説明文を１文で入力してください。<br>
+   CPU環境(Corei7 4コア16GBメモリ）で１実行あたり約25-30分程度かかります。</p>
+  <form method=POST id="imgForm">
+    {% csrf_token %}
+    <div class="mb-3">
+        <input id="prompt" class="textbox"
+            placeholder="ここに作成したい画像の文章を入力">
+    </div>
+    <br />
+    <button type="submit" class="btn btn-sm btn-primary">生成する</button>
+</form>
+<br />
+</section>  
+<section>
+<hr>
+
+
+<!-- 画像表示 -->
+
+    <p><strong>入力文：</strong><br>
+    <div class="box">
+      <p class="text_height" id="input_sentence">{{input_sentence}}</p>
+    </div><br>
+
+    <strong>ChatGPTが生成した説明文：</strong><br>
+    <div class="box">
+        <p class="text_height" id="gpt-response">{{response}}</p>
+    </div>
+    <br><br>
+     <table cellpadding="5">
+    <tr>
+        <strong>生成された画像：</strong><br>
+        <td class="box6" style="text-align: center"><img id="img1" width="490px" height="490px" ></td>
+    </tr>
+</table>
+
+
+</section>
+
+<script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+<!-- javascript -->
+<!-- セキュリティ対応-->
+<script>
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    // セキュリティ対応
+
+   // 画像生成処理の実行(生成するボタンをクリック時に呼ばれる)
+        //Ajax通信中にローディングを表示
+        $('#imgForm').on('submit', e => {
+            // デフォルトのイベントをキャンセルし、ページ遷移しないように!
+            e.preventDefault();
+            $(document).ajaxSend(function() {
+          $("#overlay").fadeIn(300);
+      });
+            var TextValue = document.getElementById("prompt");
+           
+            $.ajax({
+                url: '{% url "create_image" %}',
+                type: 'POST',
+                data: {"input_sentence": TextValue.value},
+            }).done( response => {
+
+                $("#img1").attr("src", response.img_str); //画像データをimgタグのsrc属性にセット
+                $("#input_sentence").text(response.input_sentence);
+                $("#gpt-response").text(response.response);
+                $("#prompt").val('');
+                setTimeout(function(){
+                  $("#overlay").fadeOut(300);
+              },500);
+            })
+            .fail((ata, textStatus, xhr) => {
+                alert(xhr);
+            });
+        });
+</script>
+
+
+{% endblock %}
+

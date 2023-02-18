@@ -1,0 +1,61 @@
+{% extends './base.html' %}
+{% load static %}
+{% block content %}
+<!-- ここから下を追加 -->
+<style>
+    .lint-mark-warning {
+        padding: 0 0;
+        margin-bottom: 0.0rem;
+        border-bottom: 3px solid #E94C83;
+        font-weight: bold;
+        color:#443a3f;
+        background-color: #ffff66;
+        
+    }
+    .lint-mark-del {
+        background-image: linear-gradient(#fe3464, #fe3464);
+        background-position: 0 50%;
+        background-size: 100% 2px;
+        background-repeat: repeat-x;
+        color: #888;
+        margin: 0 0.4em;
+        text-decoration: none;
+    }
+</style>
+<!-- ここまでを追加 -->
+<section>
+    <h3>ChatGPTによる文章校正</h3>
+    <br />
+    <p>校正したい文章を以下に入力してください。<br>
+
+    <form method=POST action="{% url 'grammar_correction' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <textarea style="border:4px solid rgb(118, 230, 13)" class="form-control"
+                placeholder="校正したい文章をここに入力" name="input_text" rows="5" cols="100"></textarea>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary btn-sm">校正する</button>
+    </form>
+    <br />
+</section>
+<hr>
+
+{% if response %}
+<section>
+    <p><strong>入力した文章：</strong><br>
+    <div class="box">
+        {{input_text}}
+    </div><br>
+
+    <strong>ChatGPTによる校正結果：</strong><br>
+    <div class="box">
+        <!-- ここから下を修正 -->
+       {{response |safe |linebreaksbr}}
+       <!-- ここまでを修正 -->
+    </div>
+    <br><br>
+</section>
+{% endif %}
+
+{% endblock %}

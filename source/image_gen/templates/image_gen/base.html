@@ -1,0 +1,40 @@
+{% load static %}
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Demo Apps</title>
+    <link href="https://fonts.googleapis.com/css?family=M+PLUS+1p:400,500" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/loading_style.css' %}" rel="stylesheet">
+
+</head>
+
+<body>
+    <header>
+        <!-- Ajax通信時にloading画面表示 start-->
+        <div id="overlay" class="loading">
+            <div class="spinner-wrapper">
+                <span class="spinner-text">Creating image ... </span>
+                <span class="spinner"></span>
+            </div>
+        </div>
+        <!-- Ajax通信時にloading画面表示 end -->
+        <div class="container">
+            <h1>Chat-GPTとStabule Diffusionを使った画像生成</h1>
+        </div><!-- /.container -->
+    </header>
+    <main>
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+        </section>
+    </main>
+    <footer>
+        <p>Django & Chat-GPT & Stabule Diffusion</p>
+    </footer>
+</body>
+
+</html>
